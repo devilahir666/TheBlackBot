@@ -9,11 +9,12 @@ requests
 bs4==0.0.1  # Specific version often required for quick setup
 datetime
 
-# --- database ---
-pymongo  # Removed [srv] extra to avoid warning and use the latest stable version (4.x)
-motor  # Works well with pymongo 4.x
-marshmallow==3.21.0  # Stable recent version
-umongo==3.4.0  # Fixed the 'default' AttributeError for Python 3.10+ and latest Marshmallow
+#---database---#
+pymongo
+motor
+marshmallow==3.21.0
+umongo==3.0.1  # Reverting to the version that worked well with Python 3.10
+
 
 # --- ytdl ---
 yt-dlp
