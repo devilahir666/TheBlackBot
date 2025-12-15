@@ -25,9 +25,8 @@ from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from Script import script 
 from datetime import date, datetime 
-from aiohttp import web
-# Assumes web_server is a function/coroutine in plugins/web_server.py
-from plugins import web_server 
+from aiohttp import web # aiohttp import karna zaroori hai
+# from plugins import web_server  # <--- यह लाइन हटा दी गई है
 # bot login info
 from bot import TheBlackBot
 from util.keepalive import ping_server
@@ -35,11 +34,23 @@ from bot.clients import initialize_clients
 from datetime import datetime
 from pytz import timezone
 
+# Web Server Function jo Render ko 'alive' rakhega
+async def web_server():
+    # Render ke Health Check request ko handle karne ke liye simple response
+    async def handle(request):
+        return web.Response(text="TheBlackBot Service is Alive!")
+
+    app = web.Application()
+    app.router.add_get('/', handle)
+    # App ko return karen taaki TCPSite ise chala sake
+    return app
+
+
 ppath = "plugins/*.py"
 files = glob.glob(ppath)
 # TheBlackBot.start() # <-- यह लाइन यहाँ से हटा दी गई है
 loop = asyncio.get_event_loop()
-PORT = os.environ.get("PORT", "8080") # PORT को Environment Variable से लेना बेहतर है
+PORT = os.environ.get("PORT", "8080")
 
 async def start():
     print('\n')
@@ -84,18 +95,17 @@ async def start():
     now = datetime.now(tz)
     time = now.strftime("%H:%M:%S %p")
     
-    # Log Channel Message (पहले ही फिक्स हो चुका है)
+    # Log Channel Message
     try:
         await TheBlackBot.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
     except (BadRequest, Unauthorized) as e:
         logging.error(f"Failed to send startup message to LOG_CHANNEL: {e}")
 
-    # Web Server Logic (Render को ज़िंदा रखने के लिए)
+    # **फिक्स 2: Web Server Logic को सीधे यहीं शुरू करें**
     try:
-        app = web.AppRunner(await web_server.web_server()) # Fix 2: web_server() फ़ंक्शन को कॉल किया
+        app = web.AppRunner(await web_server()) # सीधे web_server() फ़ंक्शन को कॉल करें
         await app.setup()
         bind_address = "0.0.0.0"
-        # PORT को स्ट्रिंग में बदलें (Render के लिए बेहतर)
         await web.TCPSite(app, bind_address, int(PORT)).start() 
         logging.info("Web Server Started on port %s", PORT)
     except Exception as e:
@@ -109,3 +119,10 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         logging.info('Service Is Stop Sweety 🚏')
         
+# Credit @TheBlackXYZ.
+# Please Don't remove credit.
+# TheBlackXYZBotz Forever !
+# Thanks You For Help Us In This Amazing Creativity 
+# Thanks You For Giving Me Credit @TheBlackXYZBotz
+# For Any ERROR Please Contact Me -> Telegram ->@TheBlackXYZBotz & Insta @TheBlackXYZ
+# Please Love & Support 💗💗🙏
