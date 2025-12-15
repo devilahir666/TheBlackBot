@@ -12,7 +12,7 @@ datetime
 #---database---#
 pymongo
 motor
-marshmallow
+marshmallow==3.19.0
 umongo==3.1.0  # Reverting to the version that worked well with Python 3.10
 
 
