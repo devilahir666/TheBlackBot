@@ -1,4 +1,4 @@
-#---master---#
+# --- master ---
 PyLeaves==1.0.2
 pyrofork
 pyromod==1.5
@@ -6,39 +6,39 @@ aiofiles
 aiohttp
 tgcrypto
 requests
-bs4
+bs4==0.0.1  # Specific version often required for quick setup
 datetime
 
-#---database---#
-pymongo[srv]
-marshmallow
-umongo
-motor
+# --- database ---
+pymongo  # Removed [srv] extra to avoid warning and use the latest stable version (4.x)
+motor  # Works well with pymongo 4.x
+marshmallow==3.21.0  # Stable recent version
+umongo==3.4.0  # Fixed the 'default' AttributeError for Python 3.10+ and latest Marshmallow
 
-#---ytdl----#
+# --- ytdl ---
 yt-dlp
 youtube-search-python
 youtube-search
 
-#---python----#
+# --- python ---
 opencv-python-headless
 dnspython
-googletrans==3.1.0a0 # यह विशिष्ट वर्ज़न रखना होगा क्योंकि यह Pypi पर अभी लेटेस्ट नहीं है
+googletrans==3.1.0a0
 telegraph
 python-dotenv
 
-#----others---#
+# --- others ---
 wget
 pytz
 wheel
 ujson
 hachoir
 humanize
-NumPy # <--- वर्ज़न लॉक हटाया गया
+NumPy  # Latest version compatible with the installed Python
 gTTS
-Pillow # <--- वर्ज़न लॉक हटाया गया
+Pillow  # Latest version compatible with the installed Python
 psutil
 speedtest
 
-#---imdb---#
+# --- imdb ---
 git+https://github.com/TheBlackxyz/cinemagoer
