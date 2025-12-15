@@ -1,19 +1,19 @@
 # --- master ---
-PyLeaves==1.0.2
+PyLeaves
 pyrofork
-pyromod==1.5
+pyromod
 aiofiles
 aiohttp
 tgcrypto
 requests
-bs4==0.0.1  # Specific version often required for quick setup
+bs4  # Specific version often required for quick setup
 datetime
 
 #---database---#
 pymongo
 motor
-marshmallow==3.21.0
-umongo==3.0.1  # Reverting to the version that worked well with Python 3.10
+marshmallow
+umongo  # Reverting to the version that worked well with Python 3.10
 
 
 # --- ytdl ---
@@ -24,7 +24,7 @@ youtube-search
 # --- python ---
 opencv-python-headless
 dnspython
-googletrans==3.1.0a0
+googletrans
 telegraph
 python-dotenv
 
