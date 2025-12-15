@@ -18,10 +18,11 @@ instance = Instance.from_db(db)
 
 @instance.register
 class Media(Document):
-    # **यहां बदलाव किया गया है:** 'attribute='_id'' को हटा दिया गया है। 
-    # file_id को सीधे एक StrField के रूप में रखा गया है।
-    # Pyrogram के File ID को स्ट्रिंग के रूप में स्टोर किया जाता है।
-    file_id = fields.StrField() # OLD: file_id = fields.StrField(attribute='_id')
+    # **फिक्स यहां किया गया है:** 'attribute='_id'' को हटा दिया गया है
+    # क्योंकि umongo 3.x और marshmallow 3.19.0+ के साथ यह AttributeError दे रहा था।
+    # file_id को एक सामान्य StrField के रूप में स्टोर किया जाएगा, 
+    # और MongoDB अपनी _id अपने आप जेनरेट कर लेगा। 
+    file_id = fields.StrField(required=True) 
     file_ref = fields.StrField(allow_none=True)
     file_name = fields.StrField(required=True)
     file_size = fields.IntField(required=True)
@@ -39,7 +40,7 @@ async def save_file(media):
     file_name = re.sub(r"(_|\-|\.|\+)", " ", str(media.file_name))
     try:
         file = Media(
-            file_id=file_id, # 'file_id' को अब 'file_id' फील्ड में असाइन किया गया है
+            file_id=file_id,
             file_ref=file_ref,
             file_name=file_name,
             file_size=media.file_size,
@@ -52,8 +53,8 @@ async def save_file(media):
         return False, 2
     else:
         try:
-            # MongoDB automatically assigns _id if not specified.
-            # Here, file_id is stored as a normal field.
+            # अब file_id को डुप्लीकेट की (Duplicate Key) के बजाय एक सामान्य इंडेक्स के रूप में माना जाएगा
+            # अगर आपको file_id को यूनिक रखना है, तो आपको MongoDB पर एक UNIQUE INDEX सेट करना होगा।
             await file.commit()
         except DuplicateKeyError:      
             logger.warning(str(getattr(media, "file_name", "NO FILE NAME")) + " is already saved in database")
@@ -124,7 +125,7 @@ async def get_all_files(query):
 
 
 async def get_file_details(query):
-    # **यहां बदलाव किया गया है:** query को 'file_id' फ़ील्ड के आधार पर खोजा गया है।
+    # अब 'file_id' के आधार पर खोजें
     filter = {'file_id': query}
     cursor = Media.find(filter)
     filedetails = await cursor.to_list(length=1)
