@@ -437,8 +437,8 @@ async def save_template(client, message):
     elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         grp_id = message.chat.id
         title = message.chat.title
-
-    else:
+    # **FIXED INDENTATION HERE**
+    else: 
         return
 
     st = await client.get_chat_member(grp_id, userid)
@@ -499,10 +499,3 @@ async def send_chatmsg(bot, message):
             await message.reply_text("<b>Aɴ Eʀʀᴏʀ Oᴄᴄᴜʀʀᴇᴅ !</b>")
     else:
         await message.reply_text("<b>Cᴏᴍᴍᴀɴᴅ Iɴᴄᴏᴍᴘʟᴇᴛᴇ...</b>")
-
-
-
-
-
-
-
