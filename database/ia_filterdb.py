@@ -1,4 +1,3 @@
-
 import re
 import base64
 import logging
@@ -19,7 +18,10 @@ instance = Instance.from_db(db)
 
 @instance.register
 class Media(Document):
-    file_id = fields.StrField(attribute='_id')
+    # **यहां बदलाव किया गया है:** 'attribute='_id'' को हटा दिया गया है। 
+    # file_id को सीधे एक StrField के रूप में रखा गया है।
+    # Pyrogram के File ID को स्ट्रिंग के रूप में स्टोर किया जाता है।
+    file_id = fields.StrField() # OLD: file_id = fields.StrField(attribute='_id')
     file_ref = fields.StrField(allow_none=True)
     file_name = fields.StrField(required=True)
     file_size = fields.IntField(required=True)
@@ -37,7 +39,7 @@ async def save_file(media):
     file_name = re.sub(r"(_|\-|\.|\+)", " ", str(media.file_name))
     try:
         file = Media(
-            file_id=file_id,
+            file_id=file_id, # 'file_id' को अब 'file_id' फील्ड में असाइन किया गया है
             file_ref=file_ref,
             file_name=file_name,
             file_size=media.file_size,
@@ -50,6 +52,8 @@ async def save_file(media):
         return False, 2
     else:
         try:
+            # MongoDB automatically assigns _id if not specified.
+            # Here, file_id is stored as a normal field.
             await file.commit()
         except DuplicateKeyError:      
             logger.warning(str(getattr(media, "file_name", "NO FILE NAME")) + " is already saved in database")
@@ -120,6 +124,7 @@ async def get_all_files(query):
 
 
 async def get_file_details(query):
+    # **यहां बदलाव किया गया है:** query को 'file_id' फ़ील्ड के आधार पर खोजा गया है।
     filter = {'file_id': query}
     cursor = Media.find(filter)
     filedetails = await cursor.to_list(length=1)
@@ -161,3 +166,4 @@ def unpack_new_file_id(new_file_id):
     )
     file_ref = encode_file_ref(decoded.file_reference)
     return file_id, file_ref
+    
